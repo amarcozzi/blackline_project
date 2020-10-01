@@ -23,7 +23,7 @@ def write_ignition_pattern(file, XB):
         &RAMP line with t = ignition_time  + driptorch_burn_duration + 1 and F = 1
         &VENT line with XB = location of trip SURF_ID = ignition ID
     :param file: the simulation file to write to
-    :param XB: domain size where XB[1], XB[2] are X min/max, XB[3] and XB[4] are Y min/max, etc.
+    :param XB: domain size where XB[0], XB[1] are X min/max, XB[2] and XB[3] are Y min/max, etc.
     :return: void - the function writes the input lines to the FDS input file
     """
     speed_of_firefighter = 1  # Speed that a burden bearing fighter walks in m/s
@@ -32,10 +32,10 @@ def write_ignition_pattern(file, XB):
     length_of_strip = 1  # in meters
     length_between_strips = 1  # in meters
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
-    firefighter_location = XB[1] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
+    firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
     # boundary concerns, and mimics real behavior
     ignition_id = 0
-    while firefighter_location < XB[2]:
+    while firefighter_location < XB[1]:
         surf_line = "&SURF ID = '\IGN_%d\', HRRPUA = %d, COLOR = \'RED\', RAMP_Q = \'burner_%d\' /\n" %  \
                   ignition_id, driptorch_hrrpua, ignition_id
         ramp_line_start =  "&RAMP ID = \'burner_%s\', F = 0, T = 0 /\n" % str(ignition_id)
@@ -48,6 +48,7 @@ def write_ignition_pattern(file, XB):
             str(XB[1]), str(XB[2]), str(XB[3]), str(XB[4]), str(XB[5]), str(XB[6]), str(ignition_id)
         ramp_lines = ramp_line_start+ramp_line_pre_ignite+ramp_line_start_ignition+ramp_line_end_ignition+ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
+        print(ignition_line)
         file.write(ignition_line)
         # update time and firefighter location
         distance_travelled = length_of_strip + length_between_strips
