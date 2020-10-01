@@ -36,17 +36,19 @@ def write_ignition_pattern(file, XB):
     # boundary concerns, and mimics real behavior
     ignition_id = 0
     while firefighter_location < XB[1]:
-        surf_line = "&SURF ID = '\IGN_%d\', HRRPUA = %d, COLOR = \'RED\', RAMP_Q = \'burner_%d\' /\n" %  \
-                  ignition_id, driptorch_hrrpua, ignition_id
-        ramp_line_start =  "&RAMP ID = \'burner_%s\', F = 0, T = 0 /\n" % str(ignition_id)
-        ramp_line_pre_ignite = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % str(ignition_id), str(time - 1)
-        ramp_line_start_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % str(ignition_id), str(time)
-        ramp_line_end_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % str(ignition_id), str(time + driptorch_burn_duration)
-        ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % str(ignition_id), \
-            str(time + driptorch_burn_duration + 1)
+        surf_line = "&SURF ID = 'IGN_%d\', HRRPUA = %d, COLOR = \'RED\', RAMP_Q = \'burner_%d\' /\n" % \
+            (ignition_id, driptorch_hrrpua, ignition_id)
+        ramp_line_start = "&RAMP ID = \'burner_%s\', F = 0, T = 0 /\n" % str(ignition_id)
+        ramp_line_pre_ignite = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % (str(ignition_id), str(time - 1))
+        ramp_line_start_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % (str(ignition_id), str(time))
+        ramp_line_end_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" %  \
+            (str(ignition_id), str(time + driptorch_burn_duration))
+        ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
+            (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'burner_%s\' /\n" % \
-            str(XB[1]), str(XB[2]), str(XB[3]), str(XB[4]), str(XB[5]), str(XB[6]), str(ignition_id)
-        ramp_lines = ramp_line_start+ramp_line_pre_ignite+ramp_line_start_ignition+ramp_line_end_ignition+ramp_line_post_ignition
+            (str(XB[0]), str(XB[1]), str(XB[2]), str(XB[3]), str(XB[4]), str(XB[5]), str(ignition_id))
+        ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
+            ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
         print(ignition_line)
         file.write(ignition_line)
@@ -66,6 +68,6 @@ def generate_sim(file, chid, XB):
 
 if __name__ == '__main__':
     chid = "blackline_experiment_test"
-    XB = [0,50,0,50,0,25]
+    XB = [0, 50, 0, 50, 0, 25]
     with open("input_" + chid + ".fds", 'w') as file:
         generate_sim(file, chid, XB)
