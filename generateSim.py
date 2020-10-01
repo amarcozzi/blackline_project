@@ -30,7 +30,7 @@ def write_ignition_pattern(file, XB):
     driptorch_burn_duration = 15  # Duration in seconds diesel/gas driptorch mix burns
     driptorch_hrrpua = 1500  # Reaction intensity from burning diesel/gas driptorch mix
     length_of_strip = 1  # in meters
-    length_between_strips = 1  # in meters
+    length_between_strips = 2  # in meters
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
     firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
     # boundary concerns, and mimics real behavior
@@ -50,7 +50,6 @@ def write_ignition_pattern(file, XB):
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
             ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
-        print(ignition_line)
         file.write(ignition_line)
         # update time and firefighter location
         distance_travelled = length_of_strip + length_between_strips
