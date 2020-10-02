@@ -32,10 +32,11 @@ def write_ignition_pattern(file, XB):
     :param XB: domain size where XB[0], XB[1] are X min/max, XB[2] and XB[3] are Y min/max, etc.
     :return: void - the function writes the input lines to the FDS input file
     """
-    speed_of_firefighter = 1  # Speed that a burden bearing fighter walks in m/s
+    speed_of_firefighter = 0.85  # Speed that a burden bearing fighter walks in m/s
     driptorch_burn_duration = 15  # Duration in seconds diesel/gas driptorch mix burns
     driptorch_hrrpua = 1500  # Reaction intensity from burning diesel/gas driptorch mix
-    length_of_strip = 1  # in meters
+    strip_length = 1.5  # in meters
+    strip_width = 0.15 # in meters
     length_between_strips = 2  # in meters
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
     firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
@@ -54,14 +55,14 @@ def write_ignition_pattern(file, XB):
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
                                   (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'IGN_%s\' /\n" % \
-                    (str(5), str(6), str(firefighter_location), str(firefighter_location + length_of_strip),
+                    (str(5), str(6), str(firefighter_location), str(firefighter_location + strip_length),
                      str(XB[4]), str(XB[4]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
                      ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
         file.write(ignition_line)
         # update time and firefighter location
-        distance_travelled = length_of_strip + length_between_strips
+        distance_travelled = strip_length + length_between_strips
         time_travelled = distance_travelled / speed_of_firefighter
         firefighter_location += distance_travelled
         time += time_travelled
@@ -121,19 +122,28 @@ def write_output_tail(file):
         "&BNDF QUANTITY='RADIATIVE HEAT FLUX' /\n"
     file.write(outputs_head+slice_outputs+bndf_output)
 
-def generate_sim(file, chid, IJK, XB):
+
+def write_fire_line(file, XB, fireline_location):
+    fireline = "\n&VENT, XB = %d, %d, %d, %d, %d, %d, 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
+        % (fireline_location[0], fireline_location[1], fireline_location[2], fireline_location[3],
+           fireline_location[4], fireline_location[5])
+    file.write(fireline)
+
+def generate_sim(file, chid, IJK, XB, fireline_location):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
     write_ignition_pattern(file, XB)
+    write_fire_line(file, XB, fireline_location)
     write_fuels(file, XB)
-
     write_output_tail(file)
     file.write("\n\n&TAIL\t/")
 
 
 if __name__ == '__main__':
     chid = "blackline_experiment_test"
-    IJK = [50, 50, 50]
-    XB = [0, 50, 0, 50, 0, 25]
+    IJK = [25, 25, 15]
+    XB = [0, 50, 0, 50, 0, 30]
+    fireline_width = 0.6
+    fireline_location = [10, 10 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
     with open("input_" + chid + ".fds", 'w') as file:
-        generate_sim(file, chid, IJK, XB)
+        generate_sim(file, chid, IJK, XB, fireline_location)
