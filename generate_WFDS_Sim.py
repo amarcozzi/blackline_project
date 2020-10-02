@@ -111,11 +111,23 @@ def write_fuels(file, XB):
     file.write(distribute_grass)
 
 
+def write_output_tail(file):
+    outputs_head = "\n! Simulation outputs here"
+    slice_outputs = "\n&SLCF PBY=0,QUANTITY='VELOCITY',VECTOR=.TRUE. /\n&SLCF PBY=0,QUANTITY='TEMPERATURE' /\n"    \
+        "&SLCF PBZ=1,QUANTITY='VELOCITY',VECTOR=.TRUE. /\n&SLCF PBZ=2,QUANTITY='VELOCITY',VECTOR=.TRUE. /\n"         \
+        "&SLCF PBY=0,QUANTITY='MASS FRACTION',SPEC_ID='WOOD'/\n"
+    bndf_output = "\n&BNDF QUANTITY='WALL TEMPERATURE' /\n&BNDF QUANTITY='BURNING RATE' /\n"                         \
+        "&BNDF QUANTITY='WALL THICKNESS' /\n&BNDF QUANTITY='CONVECTIVE HEAT FLUX' /\n"                             \
+        "&BNDF QUANTITY='RADIATIVE HEAT FLUX' /\n"
+    file.write(outputs_head+slice_outputs+bndf_output)
+
 def generate_sim(file, chid, IJK, XB):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
     write_fuels(file, XB)
     write_ignition_pattern(file, XB)
+    write_output_tail(file)
+    file.write("\n\n&TAIL\t/")
 
 
 if __name__ == '__main__':
