@@ -145,7 +145,7 @@ if __name__ == '__main__':
     IJK = [50, 50, 30]
     XB = [0, 50, 0, 50, 0, 30]
     fireline_width = 0.6
-    fireline_location = [10, 10 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
+    fireline_location = [40, 40 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
     print(fireline_location)
     with open("input_" + chid + ".fds", 'w') as file:
         generate_sim(file, chid, IJK, XB, fireline_location)
