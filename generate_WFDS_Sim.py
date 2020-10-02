@@ -107,7 +107,7 @@ def write_fuels(file, XB):
     file.write(grass_properties)
 
     distribute_grass = "\n&VENT XB=%d,%d,%d,%d,%d,%d,SURF_ID='GRASS' /\n" \
-                       % (XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
+                       % (XB[0], XB[1], XB[2], XB[3], XB[4], XB[4])
     file.write(distribute_grass)
 
 
