@@ -77,7 +77,7 @@ def write_boundary_domain_wind(file, IJK, XB):
     file.write(mesh_header + mesh)
     # write wind to input file
     wind_head = "\n! Wind description \n"
-    wind = "&SURF ID = \'Wind\', PROFILE = \'ATMOSPHERIC\', Z0 = 2, PLE = 0.143,VEL = -2.5 /\n"
+    wind = "&SURF ID = \'WIND\', PROFILE = \'ATMOSPHERIC\', Z0 = 2, PLE = 0.143,VEL = -2.5 /\n"
     file.write(wind_head + wind)
     # write boundary conditions to input file
     boundary_header = "\n! Boundary Conditions \n"
