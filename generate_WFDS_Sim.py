@@ -124,8 +124,9 @@ def write_output_tail(file):
 def generate_sim(file, chid, IJK, XB):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
-    write_fuels(file, XB)
     write_ignition_pattern(file, XB)
+    write_fuels(file, XB)
+
     write_output_tail(file)
     file.write("\n\n&TAIL\t/")
 
