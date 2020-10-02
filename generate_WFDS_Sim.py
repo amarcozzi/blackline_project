@@ -15,7 +15,7 @@ def write_header(file, chid):
     file.write(misc_time_dump)
 
 
-def write_ignition_pattern(file, XB):
+def write_ignition_pattern(file, XB, fireline_location):
     """
     This function writes an ignition pattern into an FDS input file. It makes the following assumptions: a firefighter
     carrying a pack will walk at a set meters per second, and will lay down a strip 1 meter long. This
@@ -38,6 +38,7 @@ def write_ignition_pattern(file, XB):
     strip_length = 1.5  # in meters
     strip_width = 0.15 # in meters
     length_between_strips = 2  # in meters
+    distance_from_line = .6
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
     firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
     # boundary concerns, and mimics real behavior
@@ -55,7 +56,9 @@ def write_ignition_pattern(file, XB):
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
                                   (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'IGN_%s\' /\n" % \
-                    (str(5), str(6), str(firefighter_location), str(firefighter_location + strip_length),
+                    (str(fireline_location - distance_from_line - strip_width),
+                     str(fireline_location - distance_from_line),
+                     str(firefighter_location), str(firefighter_location + strip_length),
                      str(XB[4]), str(XB[4]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
                      ramp_line_end_ignition + ramp_line_post_ignition
@@ -133,7 +136,7 @@ def write_fire_line(file, fireline_location):
 def generate_sim(file, chid, IJK, XB, fireline_location):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
-    write_ignition_pattern(file, XB)
+    write_ignition_pattern(file, XB, fireline_location)
     write_fire_line(file, fireline_location)
     write_fuels(file, XB)
     write_output_tail(file)
