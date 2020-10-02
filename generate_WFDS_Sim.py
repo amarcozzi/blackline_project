@@ -123,7 +123,7 @@ def write_output_tail(file):
     file.write(outputs_head+slice_outputs+bndf_output)
 
 
-def write_fire_line(file, XB, fireline_location):
+def write_fire_line(file, fireline_location):
     fireline = "\n! Fireline definition goes here\n"    \
         "&VENT, XB = %d, %d, %d, %d, %d, %d, 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
         % (fireline_location[0], fireline_location[1], fireline_location[2], fireline_location[3],
@@ -134,7 +134,7 @@ def generate_sim(file, chid, IJK, XB, fireline_location):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
     write_ignition_pattern(file, XB)
-    write_fire_line(file, XB, fireline_location)
+    write_fire_line(file, fireline_location)
     write_fuels(file, XB)
     write_output_tail(file)
     file.write("\n\n&TAIL\t/")
