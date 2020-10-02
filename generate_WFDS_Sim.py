@@ -35,6 +35,7 @@ def write_ignition_pattern(file, XB, fireline_location):
     speed_of_firefighter = 0.85  # Speed that a burden bearing fighter walks in m/s
     driptorch_burn_duration = 15  # Duration in seconds diesel/gas driptorch mix burns
     driptorch_hrrpua = 400  # Reaction intensity from burning diesel/gas driptorch mix
+    time_to_ignite = 3
     strip_length = 1.5  # in meters
     strip_width = 0.15 # in meters
     length_between_strips = 2  # in meters
@@ -50,11 +51,12 @@ def write_ignition_pattern(file, XB, fireline_location):
                     (ignition_id, driptorch_hrrpua, ignition_id)
         ramp_line_start = "&RAMP ID = \'burner_%s\', F = 0, T = 0 /\n" % str(ignition_id)
         ramp_line_pre_ignite = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % (str(ignition_id), str(time - 1))
-        ramp_line_start_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % (str(ignition_id), str(time))
+        ramp_line_start_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % (str(ignition_id),
+                                                                                    str(time + time_to_ignite))
         ramp_line_end_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % \
-                                 (str(ignition_id), str(time + driptorch_burn_duration))
+                                 (str(ignition_id), str(time + time_to_ignite + driptorch_burn_duration))
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
-                                  (str(ignition_id), str(time + driptorch_burn_duration + 1))
+                                  (str(ignition_id), str(time + time_to_ignite + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'IGN_%s\' /\n" % \
                     (str(fireline_location - distance_from_line - strip_width),
                      str(fireline_location - distance_from_line),
