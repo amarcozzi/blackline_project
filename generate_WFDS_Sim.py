@@ -142,7 +142,7 @@ def generate_sim(file, chid, IJK, XB, fireline_location):
 
 if __name__ == '__main__':
     chid = "blackline_experiment_test"
-    IJK = [25, 25, 15]
+    IJK = [50, 50, 30]
     XB = [0, 50, 0, 50, 0, 30]
     fireline_width = 0.6
     fireline_location = [10, 10 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
