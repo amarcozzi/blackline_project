@@ -9,7 +9,7 @@ def write_header(file, chid):
     head += "\n&HEAD CHID = \'%s\', TITLE = \'Test Run of example blackline experiment\' / \n" % chid
     file.write(head)
     misc = "&MISC TERRAIN_CASE = .FALSE. /\n"
-    time = "&TIME T_END = %d /\n" % (time_end)
+    time = "&TIME T_END = %d /\n" % time_end
     dump = "&DUMP DT_SLCF=0.1, DT_BNDF=0.1, SMOKE3D=.TRUE. /\n\n"
     misc_time_dump = misc + time + dump
     file.write(misc_time_dump)
@@ -45,19 +45,19 @@ def write_ignition_pattern(file, XB):
     ignition_id = 0
     while firefighter_location < XB[1]:
         surf_line = "&SURF ID = 'IGN_%d\', HRRPUA = %d, COLOR = \'RED\', RAMP_Q = \'burner_%d\' /\n" % \
-            (ignition_id, driptorch_hrrpua, ignition_id)
+                    (ignition_id, driptorch_hrrpua, ignition_id)
         ramp_line_start = "&RAMP ID = \'burner_%s\', F = 0, T = 0 /\n" % str(ignition_id)
         ramp_line_pre_ignite = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % (str(ignition_id), str(time - 1))
         ramp_line_start_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % (str(ignition_id), str(time))
-        ramp_line_end_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" %  \
-            (str(ignition_id), str(time + driptorch_burn_duration))
+        ramp_line_end_ignition = "&RAMP ID = \'burner_%s\', F = 1, T = %s /\n" % \
+                                 (str(ignition_id), str(time + driptorch_burn_duration))
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
-            (str(ignition_id), str(time + driptorch_burn_duration + 1))
+                                  (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'burner_%s\' /\n" % \
-            (str(5), str(6), str(firefighter_location), str(firefighter_location + length_of_strip),
-             str(XB[4]), str(XB[5]), str(ignition_id))
+                    (str(5), str(6), str(firefighter_location), str(firefighter_location + length_of_strip),
+                     str(XB[4]), str(XB[5]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
-            ramp_line_end_ignition + ramp_line_post_ignition
+                     ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
         file.write(ignition_line)
         # update time and firefighter location
@@ -73,12 +73,12 @@ def write_boundary_domain_wind(file, IJK, XB):
     # write mesh/spatial domain to input file
     mesh_header = "! MESH definition - This is your spatial domain\n"
     mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
-           (IJK[0],IJK[1],IJK[2],XB[0],XB[1],XB[2],XB[3],XB[4],XB[5])
+           (IJK[0], IJK[1], IJK[2], XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
     file.write(mesh_header + mesh)
     # write wind to input file
     wind_head = "\n! Wind description \n"
     wind = "&SURF ID = \'Wind\', PROFILE = \'ATMOSPHERIC\', Z0 = 2, PLE = 0.143,VEL = -2.5 /\n"
-    file.write(wind)
+    file.write(wind_head + wind)
     # write boundary conditions to input file
     boundary_header = "\n! Boundary Conditions \n"
     x_min = "&VENT MB = \'XMIN\', SURF_ID = \'WIND\' /\n"
@@ -86,26 +86,36 @@ def write_boundary_domain_wind(file, IJK, XB):
     y_min = "&VENT MB = \'YMIN\', SURF_ID = \'OPEN\' /\n"
     y_max = "&VENT MB = \'YMAX\', SURF_ID = \'OPEN\' /\n"
     z_max = "&VENT MB = \'ZMAX\', SURF_ID = \'OPEN\' /\n"
-    file.write(boundary_header+x_min+x_max+y_min+y_max+z_max)
+    file.write(boundary_header + x_min + x_max + y_min + y_max + z_max)
 
 
-def write_fuels(file):
-
-    reac = "\n\n! Combustion\n\t& REAC\n\tID = \'WOOD\'\n\tFUEL = \'WOOD\'\n" \
-           "\tFYI = \'Ritchie, et al., 5th IAFSS, C_3.4 H_6.2 O_2.5, dHc = 15MW/kg\'\n\tSOOT_YIELD = 0.02\n\tO = 2.5\n" \
-            "\tC = 3.4\n\tH = 6.2\n\tHEAT_OF_COMBUSTION = 17700 / \n"
+def write_fuels(file, XB):
+    reac = "\n\n! Combustion\n&REAC\n\tID = \'WOOD\'\n\tFUEL = \'WOOD\'\n" \
+           "\tFYI = \'Ritchie, et al., 5th IAFSS, C_3.4 H_6.2 O_2.5, dHc = 15MW/kg\'\n\tSOOT_YIELD = 0.02\n\tO = 2.5" \
+           "\n\tC = 3.4\n\tH = 6.2\n\tHEAT_OF_COMBUSTION = 17700 / \n"
     file.write(reac)
 
-    species = "\n\n! Species\n &SPEC ID='WATER VAPOR' /\n&SPEC ID='CARBON DIOXIDE'/"
+    species = "\n\n! Species\n&SPEC ID='WATER VAPOR' /\n&SPEC ID='CARBON DIOXIDE'/\n"
     file.write(species)
+
+    grass_properties = "\n! Grass properties of AU C064 Grass\n&SURF ID = \'GRASS\'\n\tVEGETATION = .TRUE." \
+                       "\n\tVEG_DRAG_CONSTANT= 0.159\n\tVEG_UNIT_DRAG_COEFF = .TRUE.\n\tVEG_POSTFIRE_DRAG_FCTR = 0.1" \
+                       "\n\tVEG_HCONV_CYLMAX = .FALSE.\n\tVEG_HCONV_CYLLAM = .TRUE.\n\tVEG_HCONV_CYLRE  = .FALSE." \
+                       "\n\tVEG_H_PYR = 411\n\tVEG_LOAD = 0.313\n\tVEG_HEIGHT   = 0.51\n\tVEG_MOISTURE = 0.058\n\tVEG_SV= 12240" \
+                       "\n\tVEG_CHAR_FRACTION  = 0.2\n\tVEG_DENSITY= 512\n\tEMISSIVITY = 0.99\n\tVEG_DEGRADATION = \'LINEAR\'" \
+                       "\n\tFIRELINE_MLR_MAX = 0.074\n\tRGB        = 122,117,48 /\n"
+    file.write(grass_properties)
+
+    distribute_grass = "\n&VENT XB=%d,%d,%d,%d,%d,%d,SURF_ID='GRASS' /\n" \
+                       % (XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
+    file.write(distribute_grass)
 
 
 def generate_sim(file, chid, IJK, XB):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
-    write_fuels(file)
+    write_fuels(file, XB)
     write_ignition_pattern(file, XB)
-
 
 
 if __name__ == '__main__':
