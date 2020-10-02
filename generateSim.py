@@ -1,5 +1,6 @@
 # This program generates an FDS Simulation file based on the in
 def write_header(file, chid):
+    time_end = 100
     head = ""
     head += "! This FDS Simulation was generated using the blackline experiment script \n"
     head += "! based on Carl's initial recommendations of a 50m fireline \n"
@@ -7,6 +8,11 @@ def write_header(file, chid):
     head += "! firebreak is 0.6 meters wide to represent hand line\n"
     head += "\n&HEAD CHID = \'%s\', TITLE = \'Test Run of example blackline experiment\' / \n" % chid
     file.write(head)
+    misc = "&MISC TERRAIN_CASE = .FALSE. /\n"
+    time = "&TIME T_END = %d /\n" % (time_end)
+    dump = "&DUMP DT_SLCF=0.1, DT_BNDF=0.1, SMOKE3D=.TRUE. /\n\n"
+    misc_time_dump = misc + time + dump
+    file.write(misc_time_dump)
 
 
 def write_ignition_pattern(file, XB):
@@ -34,6 +40,8 @@ def write_ignition_pattern(file, XB):
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
     firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
     # boundary concerns, and mimics real behavior
+    header = "\n\n! Ignition Pattern\n"
+    file.write(header)
     ignition_id = 0
     while firefighter_location < XB[1]:
         surf_line = "&SURF ID = 'IGN_%d\', HRRPUA = %d, COLOR = \'RED\', RAMP_Q = \'burner_%d\' /\n" % \
@@ -46,7 +54,8 @@ def write_ignition_pattern(file, XB):
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
             (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'burner_%s\' /\n" % \
-            (str(XB[0]), str(XB[1]), str(XB[2]), str(XB[3]), str(XB[4]), str(XB[5]), str(ignition_id))
+            (str(5), str(6), str(firefighter_location), str(firefighter_location + length_of_strip),
+             str(XB[4]), str(XB[5]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
             ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
@@ -60,13 +69,46 @@ def write_ignition_pattern(file, XB):
         ignition_id += 1
 
 
-def generate_sim(file, chid, XB):
+def write_boundary_domain_wind(file, IJK, XB):
+    # write mesh/spatial domain to input file
+    mesh_header = "! MESH definition - This is your spatial domain\n"
+    mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
+           (IJK[0],IJK[1],IJK[2],XB[0],XB[1],XB[2],XB[3],XB[4],XB[5])
+    file.write(mesh_header + mesh)
+    # write wind to input file
+    wind_head = "\n! Wind description \n"
+    wind = "&SURF ID = \'Wind\', PROFILE = \'ATMOSPHERIC\', Z0 = 2, PLE = 0.143,VEL = -2.5 /\n"
+    file.write(wind)
+    # write boundary conditions to input file
+    boundary_header = "\n! Boundary Conditions \n"
+    x_min = "&VENT MB = \'XMIN\', SURF_ID = \'WIND\' /\n"
+    x_max = "&VENT MB = \'XMAX\', SURF_ID = \'OPEN\' /\n"
+    y_min = "&VENT MB = \'YMIN\', SURF_ID = \'OPEN\' /\n"
+    y_max = "&VENT MB = \'YMAX\', SURF_ID = \'OPEN\' /\n"
+    z_max = "&VENT MB = \'ZMAX\', SURF_ID = \'OPEN\' /\n"
+    file.write(boundary_header+x_min+x_max+y_min+y_max+z_max)
+
+
+def write_fuels(file, XB):
+
+    reac = "\n\n! Combustion\n& REAC\nID = \'WOOD\'\nFUEL = \'WOOD\'\n" \
+           "FYI = \'Ritchie, et al., 5th IAFSS, C_3.4 H_6.2 O_2.5, dHc = 15MW/kg\'\nSOOT_YIELD = 0.02\nO = 2.5\n" \
+            "C = 3.4\nH = 6.2\nHEAT_OF_COMBUSTION = 17700 / \n"
+    file.write(reac)
+    species = "\n\n! Species\n &SPEC ID='WATER VAPOR' /\n&SPEC ID='CARBON DIOXIDE'/"
+    file.write(species)
+
+def generate_sim(file, chid, IJK, XB):
     write_header(file, chid)
+    write_boundary_domain_wind(file, IJK, XB)
+    write_fuels(file, XB)
     write_ignition_pattern(file, XB)
+
 
 
 if __name__ == '__main__':
     chid = "blackline_experiment_test"
+    IJK = [50, 50, 50]
     XB = [0, 50, 0, 50, 0, 25]
     with open("input_" + chid + ".fds", 'w') as file:
         generate_sim(file, chid, XB)
