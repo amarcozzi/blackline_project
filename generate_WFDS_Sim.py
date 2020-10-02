@@ -125,7 +125,7 @@ def write_output_tail(file):
 
 def write_fire_line(file, fireline_location):
     fireline = "\n! Fireline definition goes here\n"    \
-        "&VENT, XB = %d, %d, %d, %d, %d, %d, SURF_ID = 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
+        "&VENT XB = %d, %d, %d, %d, %d, %d, SURF_ID = 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
         % (fireline_location[0], fireline_location[1], fireline_location[2], fireline_location[3],
            fireline_location[4], fireline_location[5])
     file.write(fireline)
@@ -146,5 +146,6 @@ if __name__ == '__main__':
     XB = [0, 50, 0, 50, 0, 30]
     fireline_width = 0.6
     fireline_location = [10, 10 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
+    print(fireline_location)
     with open("input_" + chid + ".fds", 'w') as file:
         generate_sim(file, chid, IJK, XB, fireline_location)
