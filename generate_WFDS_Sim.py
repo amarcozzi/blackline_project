@@ -55,7 +55,7 @@ def write_ignition_pattern(file, XB):
                                   (str(ignition_id), str(time + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'burner_%s\' /\n" % \
                     (str(5), str(6), str(firefighter_location), str(firefighter_location + length_of_strip),
-                     str(XB[4]), str(XB[5]), str(ignition_id))
+                     str(XB[4]), str(XB[4]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
                      ramp_line_end_ignition + ramp_line_post_ignition
         ignition_line = surf_line + ramp_lines + vent_line
