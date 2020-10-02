@@ -37,7 +37,7 @@ def write_ignition_pattern(file, XB, fireline_location):
     driptorch_hrrpua = 400  # Reaction intensity from burning diesel/gas driptorch mix
     time_to_ignite = 3
     strip_length = 1.5  # in meters
-    strip_width = 0.15 # in meters
+    strip_width = 0.5 # in meters
     length_between_strips = 2  # in meters
     distance_from_line = 1
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
