@@ -58,8 +58,8 @@ def write_ignition_pattern(file, XB, fireline_location):
         ramp_line_post_ignition = "&RAMP ID = \'burner_%s\', F = 0, T = %s /\n" % \
                                   (str(ignition_id), str(time + time_to_ignite + driptorch_burn_duration + 1))
         vent_line = "&VENT XB = %s, %s, %s, %s, %s, %s, SURF_ID = \'IGN_%s\' /\n" % \
-                    (str(fireline_location - distance_from_line - strip_width),
-                     str(fireline_location - distance_from_line),
+                    (str(fireline_location[0] - distance_from_line - strip_width),
+                     str(fireline_location[0] - distance_from_line),
                      str(firefighter_location), str(firefighter_location + strip_length),
                      str(XB[4]), str(XB[4]), str(ignition_id))
         ramp_lines = ramp_line_start + ramp_line_pre_ignite + ramp_line_start_ignition + \
@@ -151,6 +151,5 @@ if __name__ == '__main__':
     XB = [0, 50, 0, 50, 0, 30]
     fireline_width = 0.6
     fireline_location = [40, 40 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
-    print(fireline_location)
     with open("input_" + chid + ".fds", 'w') as file:
         generate_sim(file, chid, IJK, XB, fireline_location)
