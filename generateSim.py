@@ -89,19 +89,21 @@ def write_boundary_domain_wind(file, IJK, XB):
     file.write(boundary_header+x_min+x_max+y_min+y_max+z_max)
 
 
-def write_fuels(file, XB):
+def write_fuels(file):
 
-    reac = "\n\n! Combustion\n& REAC\nID = \'WOOD\'\nFUEL = \'WOOD\'\n" \
-           "FYI = \'Ritchie, et al., 5th IAFSS, C_3.4 H_6.2 O_2.5, dHc = 15MW/kg\'\nSOOT_YIELD = 0.02\nO = 2.5\n" \
-            "C = 3.4\nH = 6.2\nHEAT_OF_COMBUSTION = 17700 / \n"
+    reac = "\n\n! Combustion\n\t& REAC\n\tID = \'WOOD\'\n\tFUEL = \'WOOD\'\n" \
+           "\tFYI = \'Ritchie, et al., 5th IAFSS, C_3.4 H_6.2 O_2.5, dHc = 15MW/kg\'\n\tSOOT_YIELD = 0.02\n\tO = 2.5\n" \
+            "\tC = 3.4\n\tH = 6.2\n\tHEAT_OF_COMBUSTION = 17700 / \n"
     file.write(reac)
+
     species = "\n\n! Species\n &SPEC ID='WATER VAPOR' /\n&SPEC ID='CARBON DIOXIDE'/"
     file.write(species)
+
 
 def generate_sim(file, chid, IJK, XB):
     write_header(file, chid)
     write_boundary_domain_wind(file, IJK, XB)
-    write_fuels(file, XB)
+    write_fuels(file)
     write_ignition_pattern(file, XB)
 
 
@@ -111,4 +113,4 @@ if __name__ == '__main__':
     IJK = [50, 50, 50]
     XB = [0, 50, 0, 50, 0, 25]
     with open("input_" + chid + ".fds", 'w') as file:
-        generate_sim(file, chid, XB)
+        generate_sim(file, chid, IJK, XB)
