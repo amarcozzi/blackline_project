@@ -124,7 +124,8 @@ def write_output_tail(file):
 
 
 def write_fire_line(file, XB, fireline_location):
-    fireline = "\n&VENT, XB = %d, %d, %d, %d, %d, %d, 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
+    fireline = "\n! Fireline definition goes here\n"    \
+        "&VENT, XB = %d, %d, %d, %d, %d, %d, 'FIRELINE', RGB = 115, 118, 83 /\n"                       \
         % (fireline_location[0], fireline_location[1], fireline_location[2], fireline_location[3],
            fireline_location[4], fireline_location[5])
     file.write(fireline)
