@@ -106,7 +106,7 @@ def write_fuels(file, XB):
                        "\n\tFIRELINE_MLR_MAX = 0.074\n\tRGB        = 122,117,48 /\n"
     file.write(grass_properties)
 
-    distribute_grass = "\n&VENT XB=%d,%d,%d,%d,%d,%d,SURF_ID='GRASS' /\n" \
+    distribute_grass = "\n&VENT XB=%d,%d,%d,%d,%d,%d, SURF_ID='GRASS' /\n" \
                        % (XB[0], XB[1], XB[2], XB[3], XB[4], XB[4])
     file.write(distribute_grass)
 
