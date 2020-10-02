@@ -39,7 +39,7 @@ def write_ignition_pattern(file, XB, fireline_location):
     strip_length = 1.5  # in meters
     strip_width = 0.15 # in meters
     length_between_strips = 2  # in meters
-    distance_from_line = .6
+    distance_from_line = 1
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
     firefighter_location = XB[0] + 2  # firefighter begins 2 meters into unit. This keeps fire off the edges for
     # boundary concerns, and mimics real behavior
