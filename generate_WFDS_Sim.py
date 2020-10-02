@@ -34,7 +34,7 @@ def write_ignition_pattern(file, XB, fireline_location):
     """
     speed_of_firefighter = 0.85  # Speed that a burden bearing fighter walks in m/s
     driptorch_burn_duration = 15  # Duration in seconds diesel/gas driptorch mix burns
-    driptorch_hrrpua = 1500  # Reaction intensity from burning diesel/gas driptorch mix
+    driptorch_hrrpua = 400  # Reaction intensity from burning diesel/gas driptorch mix
     strip_length = 1.5  # in meters
     strip_width = 0.15 # in meters
     length_between_strips = 2  # in meters
