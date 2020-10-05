@@ -85,7 +85,7 @@ def write_mesh(file):
     # import this function ion the future.
     mult_line =  "\n\n&MULT ID='m1',DX=3.8, DY=50.0, DZ=25.0, I_UPPER=7, J_UPPER=0, K_UPPER=0 /\n"
     mesh_line =  "&MESH IJK=38, 500, 250, XB=0.0, 3.8000000000000003, 0.0, 50.0, 0.0, 25.0, MULT_ID='m1' / 8 Mesh\n"
-    file.write(mult_line, mesh_line)
+    file.write(mult_line + mesh_line)
 
 def write_boundary_wind(file, IJK, XB):
 
