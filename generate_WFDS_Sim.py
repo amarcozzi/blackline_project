@@ -1,6 +1,6 @@
 # This program generates an FDS Simulation file based on the in
 def write_header(file, chid):
-    time_end = 100
+    time_end = 1
     head = ""
     head += "! This FDS Simulation was generated using the blackline experiment script \n"
     head += "! based on Carl's initial recommendations of a 50m fireline \n"
