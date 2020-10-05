@@ -74,13 +74,15 @@ def write_ignition_pattern(file, XB, fireline_location):
 
         ignition_id += 1
 
-
-def write_boundary_domain_wind(file, IJK, XB):
+def write_mesh(file, IJK, XB):
     # write mesh/spatial domain to input file
     mesh_header = "! MESH definition - This is your spatial domain\n"
     mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
            (IJK[0], IJK[1], IJK[2], XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
     file.write(mesh_header + mesh)
+
+def write_boundary_wind(file, IJK, XB):
+
     # write wind to input file
     wind_head = "\n! Wind description \n"
     wind = "&SURF ID = \'WIND\', PROFILE = \'ATMOSPHERIC\', Z0 = 2, PLE = 0.143,VEL = -2.5 /\n"
@@ -138,7 +140,7 @@ def write_fire_line(file, fireline_location):
 
 def generate_sim(file, chid, IJK, XB, fireline_location):
     write_header(file, chid)
-    write_boundary_domain_wind(file, IJK, XB)
+    write_boundary_wind(file, IJK, XB)
     write_ignition_pattern(file, XB, fireline_location)
     write_fire_line(file, fireline_location)
     write_fuels(file, XB)
