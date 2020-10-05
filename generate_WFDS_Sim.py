@@ -74,7 +74,7 @@ def write_ignition_pattern(file, XB, fireline_location):
 
         ignition_id += 1
 
-def write_mesh(file, IJK, XB):
+def write_mesh(file):
     # write mesh/spatial domain to input file
     # mesh_header = "! MESH definition - This is your spatial domain\n"
     # mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
@@ -146,6 +146,7 @@ def write_fire_line(file, fireline_location):
 
 def generate_sim(file, chid, IJK, XB, fireline_location):
     write_header(file, chid)
+    write_mesh(file)
     write_boundary_wind(file, IJK, XB)
     write_ignition_pattern(file, XB, fireline_location)
     write_fire_line(file, fireline_location)
