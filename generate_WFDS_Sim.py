@@ -36,8 +36,8 @@ def write_ignition_pattern(file, XB, fireline_location):
     driptorch_burn_duration = 15  # Duration in seconds diesel/gas driptorch mix burns
     driptorch_hrrpua = 400  # Reaction intensity from burning diesel/gas driptorch mix
     time_to_ignite = 3
-    strip_length = 1.5  # in meters
-    strip_width = 1 # in meters
+    strip_length = 1              # in meters
+    strip_width = .15                 # in meters
     length_between_strips = 2  # in meters
     distance_from_line = 1
     time = 11  # start ignitions at 10 seconds to allow for wind to normalize
@@ -148,8 +148,8 @@ def generate_sim(file, chid, IJK, XB, fireline_location):
 
 if __name__ == '__main__':
     chid = "blackline_experiment_test"
-    IJK = [50, 50, 30]
-    XB = [0, 50, 0, 50, 0, 30]
+    IJK = [300, 500, 250]
+    XB = [0, 30, 0, 50, 0, 25]
     fireline_width = 0.6
     fireline_location = [40, 40 + fireline_width, XB[2], XB[3], XB[4], XB[4]]
     with open("input_" + chid + ".fds", 'w') as file:
