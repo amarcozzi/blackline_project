@@ -76,10 +76,16 @@ def write_ignition_pattern(file, XB, fireline_location):
 
 def write_mesh(file, IJK, XB):
     # write mesh/spatial domain to input file
-    mesh_header = "! MESH definition - This is your spatial domain\n"
-    mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
-           (IJK[0], IJK[1], IJK[2], XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
-    file.write(mesh_header + mesh)
+    # mesh_header = "! MESH definition - This is your spatial domain\n"
+    # mesh = "&MESH IJK = %d, %d, %d, XB = %d, %d, %d, %d, %d, %d / \n" % \
+    #       (IJK[0], IJK[1], IJK[2], XB[0], XB[1], XB[2], XB[3], XB[4], XB[5])
+    # file.write(mesh_header + mesh)
+
+    # pull in data from online mult/mesh calculator.
+    # import this function ion the future.
+    mult_line =  "&MULT ID='m1',DX=3.8, DY=50.0, DZ=25.0, I_UPPER=7, J_UPPER=0, K_UPPER=0 /"
+    mesh_line =  "&MESH IJK=38, 500, 250, XB=0.0, 3.8000000000000003, 0.0, 50.0, 0.0, 25.0, MULT_ID='m1' / 8 Mesh"
+    file.write(mult_line, mesh_line)
 
 def write_boundary_wind(file, IJK, XB):
 
